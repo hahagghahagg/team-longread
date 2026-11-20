@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Анатомия команды</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: одна колонка-лонгрид шириной ~1040px; крупные разделы чередуются с полосами цвета; главный акцент - оранжевая "связь" между точками команды */
+:root{
+  --bg:#F2F5F3; --surface:#FFFFFF; --ink:#12242B; --muted:#4E6169; --line:#D3DCD8;
+  --teal:#0E5A62; --tealsoft:#DCEBEA; --signal:#D84A22; --on-signal:#FFFFFF; --sun:#F2B134; --on-sun:#12242B;
+  --bad:#B3361A; --badsoft:#FBE6DF; --hl:#FBE3A8;
+  --band:#12242B; --on-band:#EAF1EE; --band-muted:#A9BBBD;
+  --f-display:"Unbounded","Arial Black",sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono","Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1B20; --surface:#16272D; --ink:#E8EFEC; --muted:#9DB0B3; --line:#2A3E45;
+  --teal:#5CC1C6; --tealsoft:#173740; --signal:#FF7A52; --on-signal:#0F1B20; --sun:#F2BD4A; --on-sun:#12242B;
+  --bad:#FF8A63; --badsoft:#3A2220; --hl:#5A4515;
+  --band:#0A1317; --on-band:#E8EFEC; --band-muted:#9DB0B3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1B20; --surface:#16272D; --ink:#E8EFEC; --muted:#9DB0B3; --line:#2A3E45;
+  --teal:#5CC1C6; --tealsoft:#173740; --signal:#FF7A52; --on-signal:#0F1B20; --sun:#F2BD4A; --on-sun:#12242B;
+  --bad:#FF8A63; --badsoft:#3A2220; --hl:#5A4515;
+  --band:#0A1317; --on-band:#E8EFEC; --band-muted:#9DB0B3; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.55;
+  overflow-wrap:normal;word-break:normal;hyphens:manual;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+.wrap{max-width:1040px;margin:0 auto}
+section{padding-block:72px}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:-.01em}
+h2{font-size:clamp(1.3rem,3vw,1.8rem);margin-bottom:14px}
+h3{font-size:1rem;font-weight:500;line-height:1.3}
+h3.sub{font-size:1.15rem;margin:56px 0 8px}
+p{margin:0;text-wrap:pretty}
+.eyebrow{font-family:var(--f-mono);font-size:.9rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:14px;display:block}
+.lead{font-size:1.2rem;color:var(--muted);max-width:62ch}
+.sec-head{display:flex;flex-direction:column;gap:6px;margin-bottom:32px}
+a{color:var(--teal)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+sup.cite{line-height:0;margin-left:2px;font-size:.7em}
+sup.cite a{text-decoration:none;font-family:var(--f-mono);font-weight:500;color:var(--signal)}
+sup.cite a:hover{text-decoration:underline}
+.band sup.cite a{color:var(--sun)}
+.why{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 20px;align-items:start;background:var(--tealsoft);color:var(--ink);border-radius:6px;padding:18px 22px;margin-bottom:36px}
+.why-l{font-family:var(--f-mono);font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;color:var(--bad);font-weight:500;padding-top:5px;white-space:nowrap}
+.why p{font-size:1.05rem}
+.why sup.cite a{color:var(--bad)}
+
+/* hero */
+.hero{padding-block:48px 64px}
+.hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+.hero-grid>*{min-width:0}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:28px;font-family:var(--f-mono);font-size:.85rem}
+.hero-meta b{font-weight:500;color:var(--teal)}
+.hero p.lead{margin-top:20px}
+.hero-card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px 16px 12px}
+.hero-card svg{width:100%;height:auto;display:block}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.tags a{font-family:var(--f-mono);font-size:.85rem;text-decoration:none;border:1px solid var(--line);padding:6px 10px;border-radius:99px;color:var(--ink)}
+.tags a:hover{border-color:var(--signal);color:var(--signal)}
+
+/* svg tokens */
+.dot-g{fill:var(--muted)} .dot-t{fill:var(--signal)} .ln{stroke:var(--teal);stroke-width:2;fill:none}
+.svg-label{font-family:var(--f-mono);font-size:13px;fill:var(--ink)}
+.svg-sub{font-family:var(--f-mono);font-size:12px;fill:var(--muted)}
+
+/* признаки */
+.five{display:flex;flex-direction:column;gap:12px}
+.sign{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px 22px;display:grid;grid-template-columns:44px minmax(0,260px) minmax(0,1fr);gap:8px 22px;align-items:center}
+.sign svg{width:44px;height:44px}
+.sign h3{font-size:.95rem}
+.sign p{font-size:1rem;color:var(--muted)}
+.quote{margin-top:32px;padding:24px 28px;background:var(--tealsoft);border-radius:6px;font-size:1.15rem}
+.quote small{display:block;margin-top:8px;font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
+.ico-s{stroke:var(--teal);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ico-f{fill:var(--signal)}
+
+/* nested */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.two>*{min-width:0}
+.nest{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px}
+.nest svg{width:100%;height:auto;display:block}
+.c1{fill:var(--bg);stroke:var(--line);stroke-width:1.5}
+.c2{fill:var(--tealsoft);stroke:var(--teal);stroke-width:1.5}
+.c3{fill:var(--signal)}
+.steps{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:18px}
+.steps li{padding-left:18px;border-left:3px solid var(--line)}
+.steps li.hot{border-color:var(--signal)}
+.steps strong{display:block;font-family:var(--f-display);font-weight:500;font-size:1rem;margin-bottom:4px}
+.steps span{color:var(--muted);font-size:1rem}
+
+/* compare table */
+.band{background:var(--band);color:var(--on-band);margin-inline:calc(50% - 50vw);padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.band .eyebrow{color:var(--sun)}
+.band .lead{color:var(--band-muted)}
+.tbl-wrap{overflow-x:auto;border-radius:6px}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{text-align:left;padding:14px 16px;vertical-align:top;font-size:1rem}
+thead th{font-family:var(--f-mono);font-weight:500;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase}
+.cmp th:first-child{width:22%}
+.cmp tbody th{font-family:var(--f-mono);font-weight:500;font-size:.85rem;color:var(--band-muted);text-transform:uppercase;letter-spacing:.06em}
+.cmp tbody tr{border-top:1px solid #2c4048}
+.cmp td.g{color:var(--band-muted)}
+.cmp td.t{color:var(--on-band);font-weight:600}
+.cmp thead th.t{color:var(--sun)}
+
+/* curve */
+.curve-card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;overflow-x:auto}
+.curve-card svg{width:100%;min-width:560px;height:auto;display:block}
+.axis{stroke:var(--muted);stroke-width:1.5}
+.grid{stroke:var(--line);stroke-width:1;stroke-dasharray:3 4}
+.ref{stroke:var(--signal);stroke-width:1.5;stroke-dasharray:6 5}
+.curve-line{stroke:var(--teal);stroke-width:3;fill:none}
+.pt{fill:var(--surface);stroke:var(--signal);stroke-width:3}
+.pt-last{fill:var(--signal);stroke:var(--signal);stroke-width:3}
+.note{font-family:var(--f-mono);font-size:.85rem;color:var(--muted);margin-top:12px}
+.ladder{list-style:none;margin:32px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}
+.ladder li{margin-left:calc(var(--i)*4%);display:grid;grid-template-columns:40px minmax(0,1fr);gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px 20px}
+.ladder li.down{border-color:var(--signal)}
+.n{width:40px;height:40px;border-radius:50%;background:var(--teal);color:var(--bg);display:grid;place-items:center;font-family:var(--f-display);font-weight:500;font-size:1rem}
+.ladder li.down .n{background:var(--signal);color:var(--on-signal)}
+.ladder strong{display:block;font-family:var(--f-display);font-weight:500;font-size:1rem;margin-bottom:6px}
+.ladder p{font-size:1rem}
+.ladder .diff{margin-top:8px;font-size:1rem;color:var(--muted)}
+.ladder .diff b{color:var(--teal);font-family:var(--f-mono);font-weight:500;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;margin-right:6px}
+.ladder li.down .diff b{color:var(--bad)}
+.warn{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:26px;display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:32px;align-items:start}
+.warn>*{min-width:0}
+.warn p.t{font-size:1rem;color:var(--muted);margin-bottom:14px}
+.reasons{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:1rem}
+.loss{display:flex;flex-direction:column;gap:16px}
+.lrow>span{display:block;font-family:var(--f-mono);font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.bar{display:flex;height:38px;border-radius:4px;overflow:hidden}
+.bar i{display:flex;align-items:center;justify-content:center;font-style:normal;font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden}
+.bar .w{background:var(--teal);color:var(--bg)}
+.bar .l{background:var(--badsoft);color:var(--bad);border:1.5px dashed var(--signal)}
+.bar .g{background:var(--sun);color:var(--on-sun)}
+
+/* belbin */
+.belbin{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.bcol{color:var(--ink);border-top:6px solid var(--teal);background:var(--surface);border-radius:0 0 6px 6px;border-left:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.bcol.act{border-top-color:var(--signal)} .bcol.soc{border-top-color:var(--sun)}
+.bcol h3{font-size:.85rem;font-family:var(--f-mono);font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.role strong{display:block;font-family:var(--f-display);font-weight:500;font-size:1rem;margin-bottom:4px}
+.role span{font-size:1rem}
+
+/* tuckman */
+.stages{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative}
+.stage{padding:0 12px 0 0;min-width:0}
+.stage .bar2{height:8px;background:var(--teal);margin-bottom:16px}
+.stage:nth-child(2) .bar2{background:var(--signal)}
+.stage:nth-child(5) .bar2{background:var(--muted)}
+.stage .en{font-family:var(--f-mono);font-size:.85rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.stage h3{margin:4px 0 10px;font-size:.95rem}
+.stage p{font-size:1rem;color:var(--muted)}
+.stage .lead-style{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:1rem;color:var(--ink)}
+.stage .lead-style b{display:block;font-family:var(--f-mono);font-weight:500;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:4px}
+.callout{margin-top:32px;padding:16px 20px;border-left:4px solid var(--sun);background:var(--surface);border-radius:0 6px 6px 0}
+.hr{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:20px}
+.hr div{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.hr b{font-family:var(--f-mono);font-weight:500;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.hr strong{font-size:1.02rem;line-height:1.3}
+.hr p{font-size:1rem;color:var(--muted)}
+.map{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.mp{display:grid;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);gap:12px;align-items:stretch}
+.mp>div{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;font-size:1rem;min-width:0}
+.mp .who{display:block;font-family:var(--f-mono);font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.mp strong{display:block;font-family:var(--f-display);font-weight:500;font-size:.95rem;margin-bottom:6px}
+.mp .eq{display:grid;place-items:center;background:none;border:none;padding:0;font-size:1.5rem;color:var(--signal);font-weight:700}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.compare>div{background:var(--tealsoft);border-radius:6px;padding:16px 20px;font-size:1rem;min-width:0}
+.compare b{display:block;font-family:var(--f-mono);font-weight:500;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.compare .same b{color:var(--teal)} .compare .diffr b{color:var(--bad)}
+
+/* principles */
+.princ{display:flex;flex-direction:column;gap:20px}
+.pr{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:24px;display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:24px}
+.pr>*{min-width:0}
+.pr-head{display:flex;flex-direction:column;gap:10px}
+.pr svg{width:40px;height:40px}
+.pr p{font-size:1rem;color:var(--muted)}
+.ex{display:flex;flex-direction:column;gap:12px}
+.ex div{border-radius:6px;padding:14px 16px;font-size:1rem}
+.ex .no{background:var(--badsoft)} .ex .yes{background:var(--tealsoft)}
+.ex b{display:block;font-family:var(--f-mono);font-weight:500;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.ex .no b{color:var(--bad)} .ex .yes b{color:var(--teal)}
+
+/* pyramid */
+.pyr{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0 auto;max-width:760px}
+.lvl{padding:14px 18px;text-align:center;border-radius:4px;background:var(--surface);border:1px solid var(--line);min-width:0}
+.lvl b{font-family:var(--f-display);font-weight:500;font-size:.95rem;display:block}
+.lvl span{font-size:1rem;color:var(--muted)}
+.lvl:nth-child(1){width:46%;background:var(--signal);border-color:var(--signal)}
+.lvl:nth-child(1) b,.lvl:nth-child(1) span{color:var(--on-signal)}
+.lvl:nth-child(2){width:58%} .lvl:nth-child(3){width:70%} .lvl:nth-child(4){width:84%}
+.lvl:nth-child(5){width:100%;background:var(--teal);border-color:var(--teal)}
+.lvl:nth-child(5) b,.lvl:nth-child(5) span{color:var(--bg)}
+.pyr-note{text-align:center;font-family:var(--f-mono);font-size:.85rem;color:var(--muted);margin-top:14px}
+.dys-list{display:flex;flex-direction:column;gap:16px;margin-top:20px}
+.dys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:22px}
+.dys-h{display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;align-items:start}
+.dys-h h3{font-size:1rem;margin-bottom:6px}
+.dys-h p{font-size:1rem;color:var(--muted)}
+.dys-c b{display:block;font-family:var(--f-mono);font-weight:500;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;color:var(--teal)}
+.dys-c.fix b{color:var(--bad)}
+.dys-c ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:1rem}
+
+/* quiz */
+.quiz{color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:28px;max-width:720px}
+.q-top{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:.85rem;color:var(--muted);margin-bottom:14px}
+.q-text{font-size:1.2rem;min-height:3.6em}
+.q-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+.btn{font-family:var(--f-body);font-weight:700;font-size:1rem;padding:12px 22px;border-radius:4px;border:2px solid var(--teal);background:transparent;color:var(--teal);cursor:pointer}
+.btn:hover{background:var(--tealsoft)}
+.btn.main{background:var(--signal);border-color:var(--signal);color:var(--on-signal)}
+.q-fb{margin-top:18px;padding:14px 16px;border-radius:4px;background:var(--tealsoft);min-height:3.2em}
+.q-fb[hidden]{display:none!important}
+
+/* выводы */
+.formula{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin-bottom:36px}
+.fchip{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:10px 18px;font-weight:700}
+.fchip.res{background:var(--signal);color:var(--on-signal);border-color:var(--signal);font-family:var(--f-display);font-weight:500}
+.fop{font-family:var(--f-display);color:var(--signal);font-size:1.3rem}
+.keys{list-style:none;margin:0;padding:0}
+.keys li{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);gap:8px 28px;padding:20px 0;border-top:1px solid var(--line);align-items:baseline}
+.keys li:last-child{border-bottom:1px solid var(--line)}
+.kw{font-family:var(--f-display);font-weight:600;font-size:clamp(1.3rem,3vw,1.8rem);color:var(--signal);line-height:1.1}
+.keys p{font-size:1.15rem}
+.keys b{font-weight:700}
+
+/* sources */
+.src{padding-left:22px;display:flex;flex-direction:column;gap:12px;margin:0}
+.src li{padding-left:6px;font-size:1rem;scroll-margin-top:24px}
+.src a{overflow-wrap:anywhere}
+footer{padding-block:40px 56px;border-top:1px solid var(--line);font-family:var(--f-mono);font-size:.85rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between}
+
+@media (max-width:860px){
+  section{padding-block:52px}
+  .hero-grid,.two,.warn,.pr{grid-template-columns:1fr;gap:28px}
+  .belbin,.dys{grid-template-columns:1fr}
+  .stages{grid-template-columns:1fr;gap:28px}
+  .stage{padding:0}
+  .lvl:nth-child(n){width:100%}
+  .lvl:nth-child(1){width:70%}
+  .ladder li{margin-left:calc(var(--i)*1.5%)}
+}
+@media (max-width:700px){
+  .sign{grid-template-columns:44px minmax(0,1fr)}
+  .sign p{grid-column:1/-1}
+}
+@media (max-width:600px){
+  .why{grid-template-columns:1fr}
+  .mp{grid-template-columns:1fr;gap:6px}
+  .mp .eq{height:22px;font-size:1.2rem}
+  .compare,.keys li{grid-template-columns:1fr}
+  .ladder li{grid-template-columns:36px minmax(0,1fr);gap:12px;padding:16px}
+  .n{width:36px;height:36px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="hero-grid">
+    <div>
+      <span class="eyebrow">Электронный образовательный ресурс</span>
+      <h1>Команда как разновидность коллектива</h1>
+      <p class="lead">Основные признаки команды и особенности управления ею: чем команда отличается от обычной рабочей группы и почему руководить ею нужно иначе.</p>
+      <div class="hero-meta">
+        <span><b>Автор:</b> Батов Т.В.</span>
+        <span><b>Группа:</b> М-34</span>
+      </div>
+      <nav class="tags" aria-label="Содержание">
+        <a href="#signs">Признаки</a><a href="#place">Место команды</a><a href="#diff">Группа и команда</a><a href="#curve">Кривая</a><a href="#roles">Роли</a><a href="#stages">Стадии</a><a href="#manage">Управление</a><a href="#dys">Пороки</a><a href="#quiz">Тест</a><a href="#summary">Выводы</a><a href="#sources">Источники</a>
+      </nav>
+    </div>
+    <div class="hero-card">
+      <svg viewBox="0 0 480 270" role="img" aria-label="Слева разрозненные точки, справа связанные между собой">
+        <g>
+          <circle class="dot-g" cx="50" cy="70" r="9"/><circle class="dot-g" cx="130" cy="45" r="9"/><circle class="dot-g" cx="195" cy="105" r="9"/>
+          <circle class="dot-g" cx="65" cy="160" r="9"/><circle class="dot-g" cx="145" cy="180" r="9"/><circle class="dot-g" cx="200" cy="225" r="9"/>
+        </g>
+        <line x1="240" y1="30" x2="240" y2="215" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="4 5"/>
+        <g class="ln">
+          <path d="M300 70 L380 45 M380 45 L445 105 M300 70 L315 160 M380 45 L315 160 M380 45 L395 180 M445 105 L395 180 M315 160 L395 180 M395 180 L450 225 M445 105 L450 225 M300 70 L395 180"/>
+        </g>
+        <g>
+          <circle class="dot-t" cx="300" cy="70" r="9"/><circle class="dot-t" cx="380" cy="45" r="9"/><circle class="dot-t" cx="445" cy="105" r="9"/>
+          <circle class="dot-t" cx="315" cy="160" r="9"/><circle class="dot-t" cx="395" cy="180" r="9"/><circle class="dot-t" cx="450" cy="225" r="9"/>
+        </g>
+        <text class="svg-label" x="20" y="260">Рабочая группа</text>
+        <text class="svg-label" x="270" y="260">Команда</text>
+      </svg>
+    </div>
+  </div>
+</div></header>
+
+<main class="wrap">
+
+<section id="signs">
+  <div class="sec-head">
+    <span class="eyebrow">Определение</span>
+    <h2>Что такое команда</h2>
+    <p class="lead">Команда это небольшая группа людей, которых связывает общее дело и общая ответственность за него. Дж. Катценбах и Д. Смит выделяют пять обязательных признаков.<sup class="cite"><a href="#src-1">[1]</a></sup></p>
+  </div>
+  <div class="five">
+    <div class="sign">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><circle class="ico-s" cx="15" cy="16" r="6"/><circle class="ico-s" cx="31" cy="16" r="6"/><path class="ico-s" d="M5 38c0-7 5-11 10-11s10 4 10 11M21 38c0-7 5-11 10-11s8 4 8 11"/></svg>
+      <h3>Малочисленность</h3>
+      <p>Обычно 5–10 человек. Так проще договариваться и видеть вклад каждого.</p>
+    </div>
+    <div class="sign">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><path class="ico-s" d="M6 22a8 8 0 0 1 16 0M22 22a8 8 0 0 1 16 0"/><path class="ico-s" d="M6 22v8h16M22 30h16v-8"/><circle class="ico-f" cx="22" cy="22" r="3"/></svg>
+      <h3>Взаимодополняющие навыки</h3>
+      <p>Участники имеют разный опыт и навыки, поэтому закрывают пробелы друг друга: технические, управленческие, межличностные.</p>
+    </div>
+    <div class="sign">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><circle class="ico-s" cx="22" cy="22" r="16"/><circle class="ico-s" cx="22" cy="22" r="9"/><circle class="ico-f" cx="22" cy="22" r="3.5"/></svg>
+      <h3>Общая цель</h3>
+      <p>Миссия понятна и принята всеми. Это не цель, спущенная каждому отдельно.</p>
+    </div>
+    <div class="sign">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><path class="ico-s" d="M6 36 L16 24 L24 30 L38 10"/><path class="ico-s" d="M30 10h8v8"/></svg>
+      <h3>Общий подход</h3>
+      <p>Команда сама договаривается, кто что делает, как принимает решения и по каким правилам работает.</p>
+    </div>
+    <div class="sign">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><path class="ico-s" d="M10 22h24M26 14l8 8-8 8M18 14l-8 8 8 8"/></svg>
+      <h3>Взаимная ответственность</h3>
+      <p>Результат общий. Члены команды отвечают за него и перед руководством, и друг перед другом.</p>
+    </div>
+  </div>
+  <div class="quote">
+    Команда это малочисленная группа людей с взаимодополняющими навыками, приверженных общей миссии, целям и подходу, за реализацию которых они несут коллективную ответственность.<sup class="cite"><a href="#src-1">[1]</a></sup>
+    <small>Дж. Катценбах, Д. Смит</small>
+  </div>
+</section>
+
+<section id="place">
+  <div class="sec-head">
+    <span class="eyebrow">Место команды</span>
+    <h2>Группа, коллектив, команда</h2>
+    <p class="lead">Любая команда является коллективом, но не каждый коллектив стал командой.</p>
+  </div>
+  <div class="two">
+    <div class="nest">
+      <svg viewBox="0 0 460 340" role="img" aria-label="Три вложенных круга: социальная группа, коллектив, команда">
+        <circle class="c1" cx="230" cy="175" r="160"/>
+        <circle class="c2" cx="230" cy="223" r="112"/>
+        <circle class="c3" cx="230" cy="271" r="64"/>
+        <text class="svg-label" x="230" y="44" text-anchor="middle">Социальная группа</text>
+        <text class="svg-label" x="230" y="140" text-anchor="middle">Коллектив</text>
+        <text x="230" y="276" text-anchor="middle" font-family="var(--f-mono)" font-size="14" font-weight="500" fill="var(--on-signal)">Команда</text>
+      </svg>
+    </div>
+    <ol class="steps">
+      <li><strong>Социальная группа</strong><span>Люди, объединённые общим признаком или местом: пассажиры вагона, зрители в зале.</span></li>
+      <li><strong>Коллектив</strong><span>Организованная группа с общей целью, совместной деятельностью и устойчивыми связями.</span></li>
+      <li class="hot"><strong>Команда</strong><span>Коллектив с высокой взаимозависимостью: у участников общий результат, дополняющие друг друга роли и взаимная ответственность.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="diff" class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Сравнение</span>
+      <h2>Рабочая группа и команда</h2>
+      <p class="lead">Разница между ними лежит в способе совместной работы, а не в названии. От этого зависит и стиль управления.<sup class="cite"><a href="#src-1">[1]</a></sup></p>
+    </div>
+    <div class="tbl-wrap">
+      <table class="cmp">
+        <thead><tr><th></th><th>Рабочая группа</th><th class="t">Команда</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Цель</th><td class="g">Задачи ставит руководитель, у каждого своя</td><td class="t">Общая, принятая всеми участниками</td></tr>
+          <tr><th scope="row">Результат</th><td class="g">Сумма индивидуальных вкладов</td><td class="t">Синергия: совместная работа даёт больше, чем усилия каждого участника по отдельности</td></tr>
+          <tr><th scope="row">Ответственность</th><td class="g">Индивидуальная, каждый отвечает за свою часть</td><td class="t">Общая</td></tr>
+          <tr><th scope="row">Взаимодействие</th><td class="g">Обмен информацией, минимум зависимости</td><td class="t">Тесное, участники зависят друг от друга</td></tr>
+          <tr><th scope="row">Руководитель</th><td class="g">Распределяет задачи и контролирует</td><td class="t">Задаёт направление, развивает, делит лидерство</td></tr>
+          <tr><th scope="row">Ценность</th><td class="g">Профессионализм каждого</td><td class="t">Сочетание ролей и умение работать вместе</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="curve">
+  <div class="sec-head">
+    <span class="eyebrow">Модель Катценбаха и Смита</span>
+    <h2>Кривая командной эффективности</h2>
+    <p class="lead">Команда не появляется по приказу. Авторы модели описывают пять ступеней, которые проходит коллектив. Обратите внимание на вторую: она оказывается ниже первой.<sup class="cite"><a href="#src-1">[1]</a></sup></p>
+  </div>
+  <div class="why">
+    <span class="why-l">Зачем это нужно</span>
+    <p>Назвать группу командой легко, стать ею сложно. Эта модель показывает путь от обычной рабочей группы до высокоэффективной команды. С её помощью руководитель определяет, на какой ступени коллектив находится сейчас, и понимает, что нужно сделать для следующего шага.</p>
+  </div>
+  <div class="curve-card">
+    <svg viewBox="0 0 700 340" role="img" aria-label="Схема кривой командной эффективности с пятью точками">
+      <line class="grid" x1="60" y1="60" x2="670" y2="60"/><line class="grid" x1="60" y1="130" x2="670" y2="130"/><line class="grid" x1="60" y1="200" x2="670" y2="200" style="display:none"/>
+      <line class="axis" x1="60" y1="20" x2="60" y2="270"/><line class="axis" x1="60" y1="270" x2="680" y2="270"/>
+      <text class="svg-sub" x="14" y="150" transform="rotate(-90 14 150)" text-anchor="middle">Результат работы</text>
+      <text class="svg-sub" x="370" y="326" text-anchor="middle">Командная эффективность</text>
+      <line class="ref" x1="110" y1="200" x2="420" y2="200"/>
+      <text class="svg-sub" x="428" y="204">уровень рабочей группы</text>
+      <path class="curve-line" d="M110 200 C150 200 160 238 200 238 C250 238 260 175 320 165 C390 155 410 100 470 90 C540 80 560 40 620 36"/>
+      <circle class="pt" cx="110" cy="200" r="8"/><circle class="pt" cx="200" cy="238" r="8"/><circle class="pt" cx="320" cy="165" r="8"/><circle class="pt" cx="470" cy="90" r="8"/><circle class="pt-last" cx="620" cy="36" r="9"/>
+      <g class="svg-label" text-anchor="middle">
+        <text x="110" y="228" font-size="12">Рабочая</text><text x="110" y="244" font-size="12">группа</text>
+        <text x="200" y="266" font-size="12" dy="22">Псевдокоманда</text>
+        <text x="320" y="143" font-size="12">Потенциальная</text><text x="320" y="159" font-size="12">команда</text>
+        <text x="470" y="68" font-size="12">Реальная</text><text x="470" y="84" font-size="12">команда</text>
+        <text x="600" y="22" font-size="12" text-anchor="end">Высокоэффективная команда</text>
+      </g>
+    </svg>
+  </div>
+  <p class="note">Схема качественная: показывает порядок ступеней, а не измеренные значения.</p>
+
+  <h3 class="sub">Пять ступеней: чем они отличаются</h3>
+  <ol class="ladder">
+    <li style="--i:0"><span class="n">1</span><div><strong>Рабочая группа</strong><p>Участники делятся информацией и помогают друг другу работать лучше, но каждый отвечает только за свою часть.</p><p class="diff"><b>Отличие</b>Исходная точка. Общего результата нет, есть сумма личных.</p></div></li>
+    <li style="--i:1" class="down"><span class="n">2</span><div><strong>Псевдокоманда</strong><p>Называет себя командой, но общего результата не добивается и даже не пытается.</p><p class="diff"><b>Отличие</b>Появилась видимость командной работы без реального содержания. Результат становится хуже, чем у рабочей группы (причина разобрана ниже).</p></div></li>
+    <li style="--i:2"><span class="n">3</span><div><strong>Потенциальная команда</strong><p>Хочет улучшить результат и работает над этим, но ей пока не хватает ясной цели, общего подхода или общей ответственности.</p><p class="diff"><b>Отличие</b>Появились желание и реальные усилия стать командой.</p></div></li>
+    <li style="--i:3"><span class="n">4</span><div><strong>Реальная команда</strong><p>Выполняются все пять признаков: небольшой состав, дополняющие навыки, общая цель, общий подход и взаимная ответственность.</p><p class="diff"><b>Отличие</b>Признаки команды уже работают, а не только заявлены.</p></div></li>
+    <li style="--i:4"><span class="n">5</span><div><strong>Высокоэффективная команда</strong><p>Всё то же, что у реальной команды, плюс участники глубоко заботятся о росте и успехе друг друга. Результаты превосходят ожидания.</p><p class="diff"><b>Отличие</b>Личная приверженность людям, а не только делу. Такие команды встречаются редко.</p></div></li>
+  </ol>
+
+  <h3 class="sub">Почему псевдокоманда работает хуже рабочей группы</h3>
+  <div class="warn">
+    <div>
+      <p class="t">Рабочая группа честно делит работу и не мешает друг другу. Псевдокоманда только изображает командность, поэтому мешает. По Катценбаху и Смиту, её взаимодействие снижает результат каждого участника и не даёт общей пользы.<sup class="cite"><a href="#src-1">[1]</a></sup> Причин три:</p>
+      <ol class="reasons">
+        <li>Время уходит на встречи и согласования, которые не нужны для самой работы.</li>
+        <li>Общей цели и общей ответственности нет, поэтому от совместной работы нет выгоды.</li>
+        <li>Растут недоверие и взаимные претензии, и люди хуже делают даже свою часть.</li>
+      </ol>
+    </div>
+    <div class="loss" role="img" aria-label="Условная схема: у псевдокоманды часть работы уходит в потери, у реальной команды появляется синергия">
+      <div class="lrow"><span>Рабочая группа</span><div class="bar"><i class="w" style="width:71.4%">Работа каждого</i></div></div>
+      <div class="lrow"><span>Псевдокоманда</span><div class="bar"><i class="w" style="width:51.4%">Работа каждого</i><i class="l" style="width:20%">Потери</i></div></div>
+      <div class="lrow"><span>Реальная команда</span><div class="bar"><i class="w" style="width:71.4%">Работа каждого</i><i class="g" style="width:28.6%">Синергия</i></div></div>
+      <p class="note">Условная схема для наглядности, не измеренные данные.</p>
+    </div>
+  </div>
+</section>
+
+<section id="roles" class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Модель Белбина</span>
+      <h2>Девять командных ролей</h2>
+      <p class="lead">Р. М. Белбин показал, что сильную команду делает сочетание ролей, а не набор «звёзд». У человека обычно две-три предпочитаемые роли, поэтому роли можно совмещать: девять человек для этого не нужно.<sup class="cite"><a href="#src-3">[3]</a><a href="#src-6">[6]</a></sup></p>
+    </div>
+    <div class="why">
+      <span class="why-l">Зачем это нужно</span>
+      <p>Мы выяснили, что в команде нужны люди с разными навыками. Но какие именно роли должны быть закрыты? Модель Белбина отвечает на этот вопрос. Зная девять ролей, руководитель подбирает людей, видит, какой роли в команде не хватает, и не ждёт, что каждый будет универсальным.</p>
+    </div>
+    <div class="belbin">
+      <div class="bcol act">
+        <h3>Роли действия</h3>
+        <div class="role"><strong>Мотиватор</strong><span>Задаёт темп и давит на результат, не даёт команде расслабиться.</span></div>
+        <div class="role"><strong>Реализатор</strong><span>Превращает планы в конкретные дела, надёжен и дисциплинирован.</span></div>
+        <div class="role"><strong>Педант</strong><span>Ищет ошибки и доводит работу до конца.</span></div>
+      </div>
+      <div class="bcol">
+        <h3>Роли мышления</h3>
+        <div class="role"><strong>Генератор идей</strong><span>Предлагает нестандартные решения, когда команда в тупике.</span></div>
+        <div class="role"><strong>Эксперт-аналитик</strong><span>Трезво взвешивает варианты и помогает не ошибиться с выбором.</span></div>
+        <div class="role"><strong>Специалист</strong><span>Обладает глубокими узкими знаниями, которых нет у остальных.</span></div>
+      </div>
+      <div class="bcol soc">
+        <h3>Социальные роли</h3>
+        <div class="role"><strong>Координатор</strong><span>Формулирует цели, распределяет задачи, объединяет людей.</span></div>
+        <div class="role"><strong>Душа команды</strong><span>Поддерживает людей и сглаживает конфликты.</span></div>
+        <div class="role"><strong>Исследователь ресурсов</strong><span>Находит внешние контакты, идеи и возможности.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stages">
+  <div class="sec-head">
+    <span class="eyebrow">Модель Такмана</span>
+    <h2>Как команда растёт: пять стадий</h2>
+    <p class="lead">На каждой стадии команде нужен свой стиль руководства. Одна и та же команда может возвращаться назад, например при смене состава или цели.<sup class="cite"><a href="#src-4">[4]</a><a href="#src-5">[5]</a></sup></p>
+  </div>
+  <div class="why">
+    <span class="why-l">Зачем это нужно</span>
+    <p>Команда меняется со временем. Модель Такмана помогает понять, что с ней происходит сейчас: руководитель не принимает нормальный конфликт за провал и выбирает подходящий стиль руководства.</p>
+  </div>
+  <div class="stages">
+    <div class="stage"><div class="bar2"></div><span class="en">Forming</span><h3>Формирование</h3><p>Участники знакомятся, присматриваются, ведут себя осторожно.</p><div class="lead-style"><b>Руководитель</b>Задаёт цели и правила, действует директивно.</div></div>
+    <div class="stage"><div class="bar2"></div><span class="en">Storming</span><h3>Конфликт</h3><p>Появляются разногласия по ролям, целям и способам работы.</p><div class="lead-style"><b>Руководитель</b>Помогает обсудить разногласия, выступает посредником.</div></div>
+    <div class="stage"><div class="bar2"></div><span class="en">Norming</span><h3>Нормирование</h3><p>Складываются правила, роли и доверие, растёт сплочённость.</p><div class="lead-style"><b>Руководитель</b>Закрепляет нормы и начинает делегировать.</div></div>
+    <div class="stage"><div class="bar2"></div><span class="en">Performing</span><h3>Продуктивность</h3><p>Команда работает слаженно и самостоятельно решает проблемы.</p><div class="lead-style"><b>Руководитель</b>Снимает лишний контроль, действует как тренер.</div></div>
+    <div class="stage"><div class="bar2"></div><span class="en">Adjourning</span><h3>Завершение</h3><p>Проект закончен, команда распадается или перестраивается.</p><div class="lead-style"><b>Руководитель</b>Подводит итоги, отмечает вклад каждого.</div></div>
+  </div>
+  <div class="callout">Конфликт на второй стадии это нормальная часть развития. Команда, которая его пропустила, часто остаётся поверхностно вежливой и не доходит до настоящей слаженности.</div>
+
+  <h3 class="sub">Как использовать модель в управлении людьми</h3>
+  <p class="lead">Модель работает как диагностика: по ней видно, чего ждать от команды и что делать руководителю.</p>
+  <div class="hr">
+    <div><b>Новый человек</b><strong>Команда снова на старте</strong><p>Когда в команду приходит новый сотрудник, она частично возвращается к формированию. Нужно заново объяснить цели, роли и правила.</p></div>
+    <div><b>Спор</b><strong>Не гасить, а направлять</strong><p>Конфликт на второй стадии нормален. Задача руководителя помочь договориться о правилах, а не наказывать за разногласия.</p></div>
+    <div><b>Сроки</b><strong>Не ждать максимума сразу</strong><p>Выход на продуктивную работу занимает время. Новую команду нельзя оценивать по стандартам зрелой.</p></div>
+    <div><b>Перемены</b><strong>Готовиться к откату</strong><p>Смена цели, руководителя или состава может вернуть команду на предыдущую стадию. Это не провал, а повод вновь настроить работу.</p></div>
+  </div>
+
+  <h3 class="sub">Что общего у моделей Такмана и Катценбаха со Смитом</h3>
+  <p class="lead">Обе модели описывают путь от разрозненных людей к слаженной команде. Если сопоставить их, видно сходство ступеней.</p>
+  <div class="map">
+    <div class="mp"><div><span class="who">Катценбах и Смит</span><strong>Рабочая группа</strong>Люди работают рядом, каждый за себя.</div><div class="eq" aria-hidden="true">≈</div><div><span class="who">Такман</span><strong>Формирование</strong>Участники знакомятся и присматриваются.</div></div>
+    <div class="mp"><div><span class="who">Катценбах и Смит</span><strong>Псевдокоманда</strong>Напряжение и взаимные претензии, результат падает.</div><div class="eq" aria-hidden="true">≈</div><div><span class="who">Такман</span><strong>Конфликт</strong>Разногласия выходят наружу, силы уходят на споры.</div></div>
+    <div class="mp"><div><span class="who">Катценбах и Смит</span><strong>Потенциальная команда</strong>Желание стать командой и первые общие правила.</div><div class="eq" aria-hidden="true">≈</div><div><span class="who">Такман</span><strong>Нормирование</strong>Складываются нормы, роли и доверие.</div></div>
+    <div class="mp"><div><span class="who">Катценбах и Смит</span><strong>Реальная команда</strong>Все пять признаков команды работают.</div><div class="eq" aria-hidden="true">≈</div><div><span class="who">Такман</span><strong>Продуктивность</strong>Команда слаженно решает задачи.</div></div>
+    <div class="mp"><div><span class="who">Катценбах и Смит</span><strong>Высокоэффективная команда</strong>Участники заботятся о росте друг друга.</div><div class="eq" aria-hidden="true">≈</div><div><span class="who">Такман</span><strong>Продуктивность</strong>Высший уровень слаженности и самостоятельности.</div></div>
+  </div>
+  <div class="compare">
+    <div class="same"><b>Что общего</b>Обе модели показывают, что слаженность не возникает сразу. На пути есть «провал»: и конфликт, и псевдокоманда снижают результат, потому что силы уходят на отношения, а не на дело.</div>
+    <div class="diffr"><b>В чём разница</b>Конфликт по Такману нужно пройти, это нормальная часть роста. Псевдокоманда по Катценбаху и Смиту это ловушка: в ней конфликт не решают, а скрывают, и команда застревает.</div>
+  </div>
+  <p class="note">Сопоставление сделано автором ресурса для наглядности: ступени двух моделей совпадают не полностью.</p>
+</section>
+
+<section id="manage" class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Особенности управления</span>
+      <h2>Четыре принципа управления командой</h2>
+      <p class="lead">Командой управляют иначе, чем группой исполнителей: руководитель меньше командует и больше создаёт условия. У каждого принципа два примера: что происходит, когда его не применяют, и что меняется, когда применяют.<sup class="cite"><a href="#src-1">[1]</a></sup></p>
+    </div>
+    <div class="princ">
+      <div class="pr">
+        <div class="pr-head">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><circle class="ico-s" cx="22" cy="22" r="16"/><circle class="ico-s" cx="22" cy="22" r="9"/><circle class="ico-f" cx="22" cy="22" r="3.5"/></svg>
+          <h3>Сильная цель</h3>
+          <p>Чёткая, вдохновляющая задача, по мнению авторов подхода, главный двигатель команды. Её нужно объяснить, а не просто назначить.</p>
+        </div>
+        <div class="ex">
+          <div class="no"><b>Принцип не применяется</b>Руководитель на планёрке говорит: «В этом квартале повышаем продажи». Каждый понимает это по-своему и работает над своим. Через месяц в отделе три разных приоритета.</div>
+          <div class="yes"><b>Принцип применяется</b>Руководитель объясняет: «К декабрю хотим, чтобы треть заказов приходила по рекомендациям клиентов. Давайте вместе решим, что для этого сделаем». Все работают на одну измеримую цель и видят свой вклад.</div>
+        </div>
+      </div>
+      <div class="pr">
+        <div class="pr-head">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><circle class="ico-s" cx="14" cy="22" r="8"/><circle class="ico-s" cx="30" cy="22" r="8"/></svg>
+          <h3>Подбор по дополнению</h3>
+          <p>Собирать людей с разными навыками и командными ролями, а не одинаковых специалистов.</p>
+        </div>
+        <div class="ex">
+          <div class="no"><b>Принцип не применяется</b>Для запуска мобильного приложения наняли пять сильных разработчиков. Тестированием и общением с пользователями никто не занимается. Приложение выходит с ошибками и неудобным интерфейсом.</div>
+          <div class="yes"><b>Принцип применяется</b>В команде есть разработчик, дизайнер, тестировщик и человек, который общается с пользователями. Каждый закрывает то, чего не умеют остальные, поэтому ошибки находят до выхода.</div>
+        </div>
+      </div>
+      <div class="pr">
+        <div class="pr-head">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><path class="ico-s" d="M8 10h28v20H20l-8 8v-8H8z"/><path class="ico-s" d="M15 18h14M15 23h9"/></svg>
+          <h3>Общие правила и обратная связь</h3>
+          <p>Договориться, как принимаются решения, и регулярно говорить друг другу о результатах прямо.</p>
+        </div>
+        <div class="ex">
+          <div class="no"><b>Принцип не применяется</b>Решения принимаются в коридорах, замечания копятся и обсуждаются за спиной. Сотрудник узнаёт о проблеме только на годовой оценке, когда исправить уже поздно.</div>
+          <div class="yes"><b>Принцип применяется</b>Команда договорилась: решения принимаются на еженедельной встрече, критика звучит прямо и по делу, итоги записываются. Проблемы всплывают через неделю, а не через полгода.</div>
+        </div>
+      </div>
+      <div class="pr">
+        <div class="pr-head">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><path class="ico-s" d="M10 22h24M26 14l8 8-8 8M18 14l-8 8 8 8"/></svg>
+          <h3>Делегирование и общая ответственность</h3>
+          <p>Передавать команде решения и отвечать за итог вместе. Лидерство может переходить от одного участника к другому.</p>
+        </div>
+        <div class="ex">
+          <div class="no"><b>Принцип не применяется</b>Руководитель сам утверждает каждую мелочь. Когда срок срывается, каждый говорит: «Я свою часть сделал», и виноватого ищут вместо решения.</div>
+          <div class="yes"><b>Принцип применяется</b>Команда сама распределяет задачи. Когда один участник отстаёт, остальные помогают, а итог обсуждается как общий. Руководитель вмешивается только в стратегические вопросы.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="dys">
+  <div class="sec-head">
+    <span class="eyebrow">Модель Ленсиони</span>
+    <h2>Пять пороков команды</h2>
+    <p class="lead">П. Ленсиони описал пять проблем, которые разрушают команду. Они выстроены в пирамиду: каждая следующая растёт из предыдущей, поэтому работать нужно снизу вверх.<sup class="cite"><a href="#src-2">[2]</a><a href="#src-7">[7]</a></sup></p>
+  </div>
+  <div class="why">
+    <span class="why-l">Зачем это нужно</span>
+    <p>Мы разобрали, как команда создаётся и растёт. Теперь важно знать, что её разрушает. Модель Ленсиони показывает, какие проблемы встречаются чаще всего, как их предотвратить и в каком порядке исправлять, если они уже появились.</p>
+  </div>
+  <div class="pyr">
+    <div class="lvl"><b>Невнимание к результатам</b><span>Личные цели важнее общих</span></div>
+    <div class="lvl"><b>Избегание ответственности</b><span>Никто не напоминает друг другу о договорённостях</span></div>
+    <div class="lvl"><b>Отсутствие приверженности</b><span>Решения расплывчаты, их не выполняют</span></div>
+    <div class="lvl"><b>Страх конфликта</b><span>Спорные вопросы замалчиваются</span></div>
+    <div class="lvl"><b>Отсутствие доверия</b><span>Люди боятся показать слабость и признать ошибку</span></div>
+  </div>
+  <p class="pyr-note">Основание пирамиды внизу: сначала доверие, затем всё остальное</p>
+
+  <h3 class="sub">Как предотвратить пороки и что делать, если они появились</h3>
+  <p class="lead">Порядок ниже идёт от основания пирамиды к вершине. Налаживать ответственность бесполезно, пока в команде нет доверия и честного спора.<sup class="cite"><a href="#src-8">[8]</a><a href="#src-9">[9]</a></sup></p>
+  <div class="dys-list">
+    <article class="dys">
+      <div class="dys-h"><span class="n">1</span><div><h3>Отсутствие доверия</h3><p>Люди скрывают ошибки и не просят помощи.</p></div></div>
+      <div class="dys-c"><b>Как не допустить</b><ul><li>Руководитель первым признаёт свои ошибки.</li><li>Участники лучше узнают друг друга: как пришли в профессию, чем живут вне работы.</li></ul></div>
+      <div class="dys-c fix"><b>Если уже возникло</b><ul><li>Каждый рассказывает о своей самой большой профессиональной неудаче и о том, чему она научила.</li><li>Ошибки разбирают без поиска виноватых.</li></ul></div>
+    </article>
+    <article class="dys">
+      <div class="dys-h"><span class="n">2</span><div><h3>Страх конфликта</h3><p>Встречи скучные, одни и те же вопросы возвращаются, критика звучит за спиной.</p></div></div>
+      <div class="dys-c"><b>Как не допустить</b><ul><li>Договориться, что спор по делу это норма, а не ссора.</li><li>Отделять спор об идеях от споров о личностях.</li></ul></div>
+      <div class="dys-c fix"><b>Если уже возникло</b><ul><li>Назначить на встрече человека, который вытаскивает невысказанные разногласия.</li><li>Руководитель не гасит спор слишком рано, а даёт ему дойти до решения.</li></ul></div>
+    </article>
+    <article class="dys">
+      <div class="dys-h"><span class="n">3</span><div><h3>Отсутствие приверженности</h3><p>Решения размыты, к ним возвращаются снова и снова.</p></div></div>
+      <div class="dys-c"><b>Как не допустить</b><ul><li>В конце каждой встречи фиксировать, что решили.</li><li>Договариваться, что и как сообщить тем, кто не был на встрече.</li></ul></div>
+      <div class="dys-c fix"><b>Если уже возникло</b><ul><li>Ввести сроки принятия решений.</li><li>Принять правило «не согласен, но поддержу»: единогласие не обязательно, важно, чтобы каждого выслушали.</li></ul></div>
+    </article>
+    <article class="dys">
+      <div class="dys-h"><span class="n">4</span><div><h3>Избегание ответственности</h3><p>Никто не напоминает коллегам о договорённостях.</p></div></div>
+      <div class="dys-c"><b>Как не допустить</b><ul><li>Записать цели, сроки и правила поведения и держать их на виду.</li><li>Регулярно сверять, как выполняются договорённости.</li></ul></div>
+      <div class="dys-c fix"><b>Если уже возникло</b><ul><li>Ввести взаимную обратную связь: участники прямо говорят друг другу о вкладе.</li><li>Руководитель не берёт всю дисциплину на себя, а делает её общим делом.</li></ul></div>
+    </article>
+    <article class="dys">
+      <div class="dys-h"><span class="n">5</span><div><h3>Невнимание к результатам</h3><p>Личный статус и цели важнее общего итога.</p></div></div>
+      <div class="dys-c"><b>Как не допустить</b><ul><li>Сформулировать один общий результат команды.</li><li>Показывать прогресс на видном месте, например на общем табло.</li></ul></div>
+      <div class="dys-c fix"><b>Если уже возникло</b><ul><li>Связать вознаграждение с результатом команды, а не отдельного человека.</li><li>Руководитель на своём примере ставит общий итог выше личных амбиций.</li></ul></div>
+    </article>
+  </div>
+</section>
+
+<section id="quiz" class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Проверьте себя</span>
+      <h2>Группа или команда?</h2>
+      <p class="lead">Четыре короткие ситуации. Выберите, о чём идёт речь.</p>
+    </div>
+    <div class="quiz">
+      <div class="q-top"><span id="q-num">Вопрос 1 из 4</span><span id="q-score">Верно: 0</span></div>
+      <p class="q-text" id="q-text"></p>
+      <div class="q-btns" id="q-btns">
+        <button class="btn" type="button" data-a="g">Рабочая группа</button>
+        <button class="btn" type="button" data-a="t">Команда</button>
+      </div>
+      <div class="q-fb" id="q-fb" hidden></div>
+      <div class="q-btns"><button class="btn main" type="button" id="q-next" hidden>Дальше</button></div>
+    </div>
+  </div>
+</section>
+
+<section id="summary">
+  <div class="sec-head">
+    <span class="eyebrow">Главное</span>
+    <h2>Выводы</h2>
+  </div>
+  <div class="formula" aria-label="Формула команды">
+    <span class="fchip">Общая цель</span><span class="fop">+</span>
+    <span class="fchip">Разные навыки</span><span class="fop">+</span>
+    <span class="fchip">Общая ответственность</span><span class="fop">=</span>
+    <span class="fchip res">Команда</span>
+  </div>
+  <ul class="keys">
+    <li><span class="kw">Цель</span><p><b>Общая цель и общая ответственность</b> отличают команду от рабочей группы.</p></li>
+    <li><span class="kw">Путь</span><p>Команду нельзя назначить: она <b>растёт ступенями</b>, и на пути есть провал в виде псевдокоманды.</p></li>
+    <li><span class="kw">Роли</span><p>Силу команды даёт <b>баланс ролей</b>, а не набор «звёзд».</p></li>
+    <li><span class="kw">Стадии</span><p>На каждой стадии нужен <b>свой стиль руководства</b>: от директивного к тренерскому.</p></li>
+    <li><span class="kw">Доверие</span><p><b>Основа команды.</b> Без него нет честного спора, решений и ответственности.</p></li>
+  </ul>
+</section>
+
+<section id="sources">
+  <div class="sec-head">
+    <span class="eyebrow">Литература</span>
+    <h2>Использованные источники</h2>
+  </div>
+  <ol class="src">
+    <li id="src-1">Катценбах Дж., Смит Д. Командный подход: создание высокоэффективной организации / пер. с англ. М.: Альпина Паблишер, 2013. 376 с.</li>
+    <li id="src-2">Ленсиони П. Пять пороков команды: притчи о лидерстве / пер. И. Коротенко. М.: Манн, Иванов и Фербер, 2011.</li>
+    <li id="src-3">Belbin R. M. Management Teams: Why They Succeed or Fail. London: Heinemann, 1981.</li>
+    <li id="src-4">Tuckman B. W. Developmental sequence in small groups // Psychological Bulletin. 1965. Vol. 63, No. 6. P. 384–399.</li>
+    <li id="src-5">Tuckman B. W., Jensen M. A. C. Stages of small-group development revisited // Group &amp; Organization Studies. 1977. Vol. 2, No. 4. P. 419–427.</li>
+    <li id="src-6">Роли участников команды: девять типов для создания сбалансированной команды [Электронный ресурс] // Asana. URL: <a href="https://asana.com/ru/resources/team-roles" target="_blank" rel="noopener">asana.com/ru/resources/team-roles</a> (дата обращения: 31.10.2026).</li>
+    <li id="src-7">Эффективное управление командой: методика Патрика Ленсиони [Электронный ресурс] // Контур. URL: <a href="https://kontur.ru/articles/366" target="_blank" rel="noopener">kontur.ru/articles/366</a> (дата обращения: 31.10.2026).</li>
+    <li id="src-8">Lencioni P. Overcoming the Five Dysfunctions of a Team: A Field Guide for Leaders, Managers, and Facilitators. San Francisco: Jossey-Bass, 2005.</li>
+    <li id="src-9">Пять пороков команды: кратко и просто [Электронный ресурс] // Skyeng. URL: <a href="https://skyeng.ru/it-industry/management/kratkoe-soderzhanie-5-porokov-komandy/" target="_blank" rel="noopener">skyeng.ru/it-industry/management/kratkoe-soderzhanie-5-porokov-komandy</a> (дата обращения: 31.10.2026).</li>
+  </ol>
+</section>
+
+</main>
+
+<div class="wrap"><footer>
+  <span>Автор: Батов Т.В., группа М-34</span>
+  <span>Тема: команда как разновидность коллектива</span>
+</footer></div>
+
+<script>
+(function(){
+  var Q=[
+    {t:"Каждый сотрудник отдела получает задачи от начальника и отчитывается лично ему. Друг от друга они почти не зависят.",a:"g",f:"Это рабочая группа: результат складывается из отдельных вкладов, ответственность индивидуальная."},
+    {t:"Продуктовая группа из шести человек сама выбирает, как достичь цели, и каждый отвечает за итог перед остальными.",a:"t",f:"Это команда: общая цель, общий подход и взаимная ответственность."},
+    {t:"Руководитель называет себя лидером команды, но решает всё сам, а участники работают отдельно друг от друга.",a:"g",f:"Это рабочая группа, которая называет себя командой. У Катценбаха и Смита такая ступень зовётся псевдокомандой."},
+    {t:"В группе есть генератор идей, аналитик, педант и координатор. Они дополняют друг друга и вместе отвечают за результат.",a:"t",f:"Это команда: роли по Белбину дополняют друг друга, а ответственность общая."}
+  ];
+  var i=0,score=0,answered=false;
+  var $=function(id){return document.getElementById(id)};
+  var btns=$("q-btns").querySelectorAll("button");
+  function show(){
+    answered=false;
+    $("q-num").textContent="Вопрос "+(i+1)+" из "+Q.length;
+    $("q-score").textContent="Верно: "+score;
+    $("q-text").textContent=Q[i].t;
+    $("q-fb").hidden=true;$("q-next").hidden=true;
+    btns.forEach(function(b){b.disabled=false;b.style.display=""});
+  }
+  btns.forEach(function(b){b.addEventListener("click",function(){
+    if(answered)return;answered=true;
+    var ok=b.getAttribute("data-a")===Q[i].a;
+    if(ok)score++;
+    $("q-score").textContent="Верно: "+score;
+    var fb=$("q-fb");fb.hidden=false;
+    fb.textContent=(ok?"Верно. ":"Не совсем. ")+Q[i].f;
+    $("q-next").hidden=false;
+    $("q-next").textContent=(i<Q.length-1)?"Дальше":"Результат";
+  })});
+  $("q-next").addEventListener("click",function(){
+    if(i<Q.length-1){i++;show();return}
+    if(i===Q.length-1&&!$("q-next").dataset.done){
+      $("q-text").textContent="Итог: "+score+" из "+Q.length+". "+(score===Q.length?"Отлично, различие вы уловили.":"Вернитесь к таблице сравнения и попробуйте ещё раз.");
+      $("q-fb").hidden=true;btns.forEach(function(b){b.style.display="none"});
+      $("q-next").textContent="Пройти заново";$("q-next").dataset.done="1";return;
+    }
+    i=0;score=0;delete $("q-next").dataset.done;show();
+  });
+  show();
+})();
+</script>
+</body>
+</html>
